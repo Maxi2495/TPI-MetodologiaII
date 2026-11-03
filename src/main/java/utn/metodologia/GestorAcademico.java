@@ -64,13 +64,8 @@ public class GestorAcademico {
 
     // Operacion 2: Asignar Responsable
     public boolean asignarResponsable(int idSolicitud, String idResponsable) {
-        Solicitud encontrada = null;
-        for (Solicitud s : listaSolicitudes) {
-            if (s.id == idSolicitud) {
-                encontrada = s;
-                break;
-            }
-        }
+        Solicitud encontrada = buscarSolicitudPorId(idSolicitud);
+
         if (encontrada == null) {
             System.out.println("No se encontro la solicitud con ID: " + idSolicitud);
             return false;
@@ -96,13 +91,8 @@ public class GestorAcademico {
 
     // Operacion 3: Cambiar estado y dictamen
     public boolean cambiarEstado(int idSolicitud, String nuevoEstado, String dictamen) {
-        Solicitud encontrada = null;
-        for (Solicitud s : listaSolicitudes) {
-            if (s.id == idSolicitud) {
-                encontrada = s;
-                break;
-            }
-        }
+        Solicitud encontrada = buscarSolicitudPorId(idSolicitud);
+
         if (encontrada == null) return false;
 
         // Validaciones primitivas
@@ -139,5 +129,13 @@ public class GestorAcademico {
         System.out.println("TOTALES: " + listaSolicitudes.size() + " solicitudes procesadas.");
         System.out.println("Pendientes: " + pendientes + " | Aprobadas: " + aprobadas + " | Rechazadas: " + rechazadas);
         System.out.println("=======================================================\n");
+    }
+    private Solicitud buscarSolicitudPorId(int idSolicitud) {
+        for (Solicitud solicitud : listaSolicitudes) {
+            if (solicitud.id == idSolicitud) {
+                return solicitud;
+            }
+        }
+        return null;
     }
 }

@@ -28,3 +28,21 @@
   y nuevamente después de eliminar el método anterior.
 - Límite: el constructor del record todavía recibe ocho String;
   no elimina por sí solo el riesgo de intercambiar sus argumentos.
+
+## 3. Reubicación de responsabilidad: persistencia de solicitudes
+
+- Problema: registrarSolicitud incluía directamente la escritura del archivo.
+- Cambio: se trasladó la escritura a PersistenciaSolicitudesArchivo,
+  que implementa la interfaz PersistenciaSolicitudes.
+- GestorAcademico recibe la persistencia mediante su constructor.
+  Se conserva un constructor por defecto que utiliza solicitudes_db.txt.
+- Beneficio: separa la infraestructura de la gestión de solicitudes
+  y permite sustituir el almacenamiento en las pruebas.
+- Principios: mejora SRP y aplica DIP mediante una interfaz específica.
+- Comportamiento conservado: mismo formato de archivo, escritura
+  al final del archivo y manejo de IOException existente.
+- Verificación: pasaron las 10 pruebas anteriores y una nueva prueba
+  que comprueba la delegación del guardado sin escribir en disco.
+- Límite: las pruebas anteriores todavía utilizan la persistencia real.
+  No se corrigieron la falta de actualización del archivo ni el manejo
+  de errores de escritura.

@@ -1,17 +1,23 @@
 package utn.metodologia;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GestorAcademico {
     // Almacenamiento en memoria y persistencia acoplada
     public List<Solicitud> listaSolicitudes = new ArrayList<>();
     public List<Responsable> listaResponsables = new ArrayList<>();
     private int contadorId = 1;
-    private final String ARCHIVO_DATOS = "solicitudes_db.txt";
+    private final PersistenciaSolicitudes persistencia;
 
     public GestorAcademico() {
-        // hardcodeo inicial
+        this(new PersistenciaSolicitudesArchivo("solicitudes_db.txt"));
+    }
+
+    public GestorAcademico(PersistenciaSolicitudes persistencia) {
+        this.persistencia = persistencia;
+
         listaResponsables.add(new Responsable("R01", "Prof. Gomez", "Sistemas", 0));
         listaResponsables.add(new Responsable("R02", "Lic. Perez", "Alumnos", 0));
     }
@@ -54,11 +60,8 @@ public class GestorAcademico {
 
         listaSolicitudes.add(sol);
 
-        // Persistencia directa en archivo de texto acoplada en el mismo método
-        try (FileWriter fw = new FileWriter(ARCHIVO_DATOS, true);
-             BufferedWriter bw = new BufferedWriter(fw);
-             PrintWriter out = new PrintWriter(bw)) {
-            out.println(sol.id + ";" + est.legajo + ";" + sol.tipo + ";" + sol.estado + ";" + sol.responsable.nombre);
+        try {
+            persistencia.guardar(sol);
         } catch (IOException e) {
             System.out.println("Error de I/O al guardar: " + e.getMessage());
         }

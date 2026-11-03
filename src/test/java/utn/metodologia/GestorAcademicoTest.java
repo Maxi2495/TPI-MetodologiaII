@@ -146,4 +146,21 @@ class GestorAcademicoTest {
                 "PRORROGA", "Solicitud de prueba", "MEDIA", "02/11/2026"
         ));
     }
+    @Test
+    void debeGuardarSolicitudUsandoLaPersistenciaRecibida() {
+        java.util.List<Solicitud> guardadas = new java.util.ArrayList<>();
+
+        PersistenciaSolicitudes persistenciaDePrueba = solicitud -> {
+            guardadas.add(solicitud);
+        };
+
+        GestorAcademico gestor = new GestorAcademico(persistenciaDePrueba);
+
+        Solicitud solicitud = registrarProrroga(gestor);
+
+        assertNotNull(solicitud);
+        assertEquals(1, guardadas.size());
+        assertSame(solicitud, guardadas.get(0));
+        assertEquals("R02", guardadas.get(0).responsable.id);
+    }
 }

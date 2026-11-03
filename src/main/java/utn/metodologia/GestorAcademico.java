@@ -18,8 +18,25 @@ public class GestorAcademico {
 
     // Acá smells codes: Long method y data clump (demasiados parámetros primitivos sueltos)
     // smell code 3: Violación de SRP (valida, crea, asigna, escribe en disco e imprime por consola)
-    public Solicitud registrarSolicitud(String legajo, String nombre, String email, String carrera,
-                                        String tipo, String descripcion, String prioridad, String fecha) {
+    public Solicitud registrarSolicitud(
+            String legajo, String nombre, String email, String carrera,
+            String tipo, String descripcion, String prioridad, String fecha) {
+
+        return registrarSolicitud(new DatosSolicitud(
+                legajo, nombre, email, carrera,
+                tipo, descripcion, prioridad, fecha
+        ));
+    }
+
+    public Solicitud registrarSolicitud(DatosSolicitud datos) {
+        String legajo = datos.legajo();
+        String nombre = datos.nombre();
+        String email = datos.email();
+        String carrera = datos.carrera();
+        String tipo = datos.tipo();
+        String descripcion = datos.descripcion();
+        String prioridad = datos.prioridad();
+        String fecha = datos.fecha();
 
         // Validaciones defensivas mezcladas con lógica de negocio
         if (legajo == null || legajo.trim().isEmpty()) {
@@ -64,13 +81,8 @@ public class GestorAcademico {
 
     // Operacion 2: Asignar Responsable
     public boolean asignarResponsable(int idSolicitud, String idResponsable) {
-        Solicitud encontrada = null;
-        for (Solicitud s : listaSolicitudes) {
-            if (s.id == idSolicitud) {
-                encontrada = s;
-                break;
-            }
-        }
+        Solicitud encontrada = buscarSolicitudPorId(idSolicitud);
+
         if (encontrada == null) {
             System.out.println("No se encontro la solicitud con ID: " + idSolicitud);
             return false;
@@ -96,13 +108,8 @@ public class GestorAcademico {
 
     // Operacion 3: Cambiar estado y dictamen
     public boolean cambiarEstado(int idSolicitud, String nuevoEstado, String dictamen) {
-        Solicitud encontrada = null;
-        for (Solicitud s : listaSolicitudes) {
-            if (s.id == idSolicitud) {
-                encontrada = s;
-                break;
-            }
-        }
+        Solicitud encontrada = buscarSolicitudPorId(idSolicitud);
+
         if (encontrada == null) return false;
 
         // Validaciones primitivas
@@ -139,5 +146,13 @@ public class GestorAcademico {
         System.out.println("TOTALES: " + listaSolicitudes.size() + " solicitudes procesadas.");
         System.out.println("Pendientes: " + pendientes + " | Aprobadas: " + aprobadas + " | Rechazadas: " + rechazadas);
         System.out.println("=======================================================\n");
+    }
+    private Solicitud buscarSolicitudPorId(int idSolicitud) {
+        for (Solicitud solicitud : listaSolicitudes) {
+            if (solicitud.id == idSolicitud) {
+                return solicitud;
+            }
+        }
+        return null;
     }
 }

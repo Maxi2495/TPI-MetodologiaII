@@ -18,8 +18,25 @@ public class GestorAcademico {
 
     // Acá smells codes: Long method y data clump (demasiados parámetros primitivos sueltos)
     // smell code 3: Violación de SRP (valida, crea, asigna, escribe en disco e imprime por consola)
-    public Solicitud registrarSolicitud(String legajo, String nombre, String email, String carrera,
-                                        String tipo, String descripcion, String prioridad, String fecha) {
+    public Solicitud registrarSolicitud(
+            String legajo, String nombre, String email, String carrera,
+            String tipo, String descripcion, String prioridad, String fecha) {
+
+        return registrarSolicitud(new DatosSolicitud(
+                legajo, nombre, email, carrera,
+                tipo, descripcion, prioridad, fecha
+        ));
+    }
+
+    public Solicitud registrarSolicitud(DatosSolicitud datos) {
+        String legajo = datos.legajo();
+        String nombre = datos.nombre();
+        String email = datos.email();
+        String carrera = datos.carrera();
+        String tipo = datos.tipo();
+        String descripcion = datos.descripcion();
+        String prioridad = datos.prioridad();
+        String fecha = datos.fecha();
 
         // Validaciones defensivas mezcladas con lógica de negocio
         if (legajo == null || legajo.trim().isEmpty()) {

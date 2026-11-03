@@ -115,28 +115,9 @@ public class GestorAcademico {
         }
     }
 
-    // Operacion 4: Buscar, Filtrar y Reporte
+    // Operacion 4: Reporte general
     public void imprimirReporteGeneral() {
-        System.out.println("\n=======================================================");
-        System.out.println("              REPORTE DE GESTION ACADEMICA             ");
-        System.out.println("=======================================================");
-        int pendientes = 0;
-        int aprobadas = 0;
-        int rechazadas = 0;
-
-        for (Solicitud s : listaSolicitudes) {
-            if (s.estado.equals("PENDIENTE")) pendientes++;
-            else if (s.estado.equals("APROBADA")) aprobadas++;
-            else if (s.estado.equals("RECHAZADA")) rechazadas++;
-
-            System.out.println("ID: " + s.id + " | Tipo: " + s.tipo + " | Estudiante: " + s.estudiante.nombreCompleto +
-                    " | Estado: " + s.estado + " | Responsable: " + s.responsable.nombre);
-        }
-
-        System.out.println("-------------------------------------------------------");
-        System.out.println("TOTALES: " + listaSolicitudes.size() + " solicitudes procesadas.");
-        System.out.println("Pendientes: " + pendientes + " | Aprobadas: " + aprobadas + " | Rechazadas: " + rechazadas);
-        System.out.println("=======================================================\n");
+        new ReporteSolicitudes().imprimir(listaSolicitudes);
     }
     private Solicitud buscarSolicitudPorId(int idSolicitud) {
         for (Solicitud solicitud : listaSolicitudes) {

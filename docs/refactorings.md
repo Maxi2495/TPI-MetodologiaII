@@ -46,3 +46,19 @@
 - Límite: las pruebas anteriores todavía utilizan la persistencia real.
   No se corrigieron la falta de actualización del archivo ni el manejo
   de errores de escritura.
+
+## 4. Move Method: presentación del reporte
+
+- Problema: GestorAcademico también recorría las solicitudes,
+  calculaba subtotales y construía la salida del reporte.
+- Cambio: se trasladó esa responsabilidad al método imprimir
+  de la clase ReporteSolicitudes.
+- GestorAcademico conserva imprimirReporteGeneral como punto
+  de entrada y delega la presentación.
+- Beneficio: reduce las responsabilidades del gestor y concentra
+  el reporte en un componente específico, mejorando SRP y cohesión.
+- Comportamiento conservado: mismo listado, formato y subtotales.
+- Verificación: pasaron las 11 pruebas existentes y se ejecutó Main,
+  cuya salida coincidió con la observada antes del cambio.
+- Límite: permanece pendiente el subtotal del estado EN_REVISION.
+  Las pruebas actuales no verifican automáticamente el reporte.

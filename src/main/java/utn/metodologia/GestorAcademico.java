@@ -1,31 +1,25 @@
 package utn.metodologia;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GestorAcademico {
     // Almacenamiento en memoria y persistencia acoplada
     public List<Solicitud> listaSolicitudes = new ArrayList<>();
     public List<Responsable> listaResponsables = new ArrayList<>();
     private int contadorId = 1;
-    private final String ARCHIVO_DATOS = "solicitudes_db.txt";
+    private final PersistenciaSolicitudes persistencia;
 
     public GestorAcademico() {
-        // hardcodeo inicial
-        listaResponsables.add(new Responsable("R01", "Prof. Gomez", "Sistemas", 0));
-        listaResponsables.add(new Responsable("R02", "Lic. Perez", "Alumnos", 0));
+        this(new PersistenciaSolicitudesArchivo("solicitudes_db.txt"));
     }
 
-    // Acá smells codes: Long method y data clump (demasiados parámetros primitivos sueltos)
-    // smell code 3: Violación de SRP (valida, crea, asigna, escribe en disco e imprime por consola)
-    public Solicitud registrarSolicitud(
-            String legajo, String nombre, String email, String carrera,
-            String tipo, String descripcion, String prioridad, String fecha) {
+    public GestorAcademico(PersistenciaSolicitudes persistencia) {
+        this.persistencia = persistencia;
 
-        return registrarSolicitud(new DatosSolicitud(
-                legajo, nombre, email, carrera,
-                tipo, descripcion, prioridad, fecha
-        ));
+        listaResponsables.add(new Responsable("R01", "Prof. Gomez", "Sistemas", 0));
+        listaResponsables.add(new Responsable("R02", "Lic. Perez", "Alumnos", 0));
     }
 
     public Solicitud registrarSolicitud(DatosSolicitud datos) {
@@ -66,11 +60,8 @@ public class GestorAcademico {
 
         listaSolicitudes.add(sol);
 
-        // Persistencia directa en archivo de texto acoplada en el mismo método
-        try (FileWriter fw = new FileWriter(ARCHIVO_DATOS, true);
-             BufferedWriter bw = new BufferedWriter(fw);
-             PrintWriter out = new PrintWriter(bw)) {
-            out.println(sol.id + ";" + est.legajo + ";" + sol.tipo + ";" + sol.estado + ";" + sol.responsable.nombre);
+        try {
+            persistencia.guardar(sol);
         } catch (IOException e) {
             System.out.println("Error de I/O al guardar: " + e.getMessage());
         }
@@ -124,28 +115,9 @@ public class GestorAcademico {
         }
     }
 
-    // Operacion 4: Buscar, Filtrar y Reporte
+    // Operacion 4: Reporte general
     public void imprimirReporteGeneral() {
-        System.out.println("\n=======================================================");
-        System.out.println("              REPORTE DE GESTION ACADEMICA             ");
-        System.out.println("=======================================================");
-        int pendientes = 0;
-        int aprobadas = 0;
-        int rechazadas = 0;
-
-        for (Solicitud s : listaSolicitudes) {
-            if (s.estado.equals("PENDIENTE")) pendientes++;
-            else if (s.estado.equals("APROBADA")) aprobadas++;
-            else if (s.estado.equals("RECHAZADA")) rechazadas++;
-
-            System.out.println("ID: " + s.id + " | Tipo: " + s.tipo + " | Estudiante: " + s.estudiante.nombreCompleto +
-                    " | Estado: " + s.estado + " | Responsable: " + s.responsable.nombre);
-        }
-
-        System.out.println("-------------------------------------------------------");
-        System.out.println("TOTALES: " + listaSolicitudes.size() + " solicitudes procesadas.");
-        System.out.println("Pendientes: " + pendientes + " | Aprobadas: " + aprobadas + " | Rechazadas: " + rechazadas);
-        System.out.println("=======================================================\n");
+        new ReporteSolicitudes().imprimir(listaSolicitudes);
     }
     private Solicitud buscarSolicitudPorId(int idSolicitud) {
         for (Solicitud solicitud : listaSolicitudes) {

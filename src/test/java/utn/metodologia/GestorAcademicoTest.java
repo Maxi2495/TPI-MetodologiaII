@@ -163,4 +163,112 @@ class GestorAcademicoTest {
         assertSame(solicitud, guardadas.get(0));
         assertEquals("R02", guardadas.get(0).responsable.id);
     }
+
+    @Test
+    void debeActualizarContadoresAlReasignarResponsable() {
+        GestorAcademico gestor = new GestorAcademico(solicitud -> {});
+        Solicitud solicitud = registrarProrroga(gestor);
+        Responsable responsableAnterior = solicitud.responsable;
+
+        boolean resultado = gestor.asignarResponsable(solicitud.id, "R01");
+
+        assertTrue(resultado);
+        assertEquals("R01", solicitud.responsable.id);
+        assertEquals(0, responsableAnterior.casosAsignados);
+        assertEquals(1, solicitud.responsable.casosAsignados);
+    }
+
+    @Test
+    void debeMantenerContadorAlAsignarElMismoResponsable() {
+        GestorAcademico gestor = new GestorAcademico(solicitud -> {});
+        Solicitud solicitud = registrarProrroga(gestor);
+
+        boolean resultado = gestor.asignarResponsable(solicitud.id, "R02");
+
+        assertTrue(resultado);
+        assertEquals("R02", solicitud.responsable.id);
+        assertEquals(1, solicitud.responsable.casosAsignados);
+    }
+
+    @Test
+    void debeRechazarDatosNulosSinRegistrarSolicitud() {
+        GestorAcademico gestor = new GestorAcademico(solicitud -> {});
+
+        Solicitud resultado = gestor.registrarSolicitud(null);
+
+        assertNull(resultado);
+        assertTrue(gestor.listaSolicitudes.isEmpty());
+        assertEquals(0, gestor.listaResponsables.get(0).casosAsignados);
+        assertEquals(0, gestor.listaResponsables.get(1).casosAsignados);
+    }
+
+    @Test
+    void debeRechazarTipoNuloSinRegistrarSolicitud() {
+        GestorAcademico gestor = new GestorAcademico(solicitud -> {});
+
+        Solicitud resultado = gestor.registrarSolicitud(new DatosSolicitud(
+                "LEG-TEST-003", "Estudiante de prueba",
+                "estudiante@example.com", "TUP",
+                null, "Solicitud de prueba", "MEDIA", "02/11/2026"
+        ));
+
+        assertNull(resultado);
+        assertTrue(gestor.listaSolicitudes.isEmpty());
+        assertEquals(0, gestor.listaResponsables.get(0).casosAsignados);
+        assertEquals(0, gestor.listaResponsables.get(1).casosAsignados);
+    }
+
+    @Test
+    void debeRechazarEstadoNuloSinModificarSolicitud() {
+        GestorAcademico gestor = new GestorAcademico(solicitud -> {});
+        Solicitud solicitud = registrarProrroga(gestor);
+
+        boolean resultado = gestor.cambiarEstado(
+                solicitud.id, null, "Dictamen de prueba"
+        );
+
+        assertFalse(resultado);
+        assertEquals("PENDIENTE", solicitud.estado);
+        assertEquals("SIN_RESOLUCION", solicitud.dictamenResolucion);
+    }
+    @Test
+    void debeRechazarRegistroSiFallaLaPersistencia() {
+        PersistenciaSolicitudes persistenciaConError = solicitud -> {
+            throw new java.io.IOException("Fallo de escritura simulado");
+        };
+
+        GestorAcademico gestor = new GestorAcademico(persistenciaConError);
+
+        Solicitud resultado = registrarProrroga(gestor);
+
+        assertNull(resultado);
+        assertTrue(gestor.listaSolicitudes.isEmpty());
+        assertEquals(0, gestor.listaResponsables.get(0).casosAsignados);
+        assertEquals(0, gestor.listaResponsables.get(1).casosAsignados);
+    }
+
+    @Test
+    void debeConservarIdDisponibleDespuesDeUnFalloDePersistencia() {
+        java.util.List<Solicitud> intentos = new java.util.ArrayList<>();
+
+        PersistenciaSolicitudes persistencia = solicitud -> {
+            intentos.add(solicitud);
+
+            if (intentos.size() == 1) {
+                throw new java.io.IOException("Primer intento fallido");
+            }
+        };
+
+        GestorAcademico gestor = new GestorAcademico(persistencia);
+
+        Solicitud primerIntento = registrarProrroga(gestor);
+        Solicitud segundoIntento = registrarProrroga(gestor);
+
+        assertNull(primerIntento);
+        assertNotNull(segundoIntento);
+        assertEquals(1, segundoIntento.id);
+        assertEquals(1, gestor.listaSolicitudes.size());
+        assertEquals(1, segundoIntento.responsable.casosAsignados);
+    }
+
 }

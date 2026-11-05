@@ -23,6 +23,10 @@ public class GestorAcademico {
     }
 
     public Solicitud registrarSolicitud(DatosSolicitud datos) {
+        if (datos == null) {
+            System.out.println("ERROR: Datos de solicitud invalidos");
+            return null;
+        }
         String legajo = datos.legajo();
         String nombre = datos.nombre();
         String email = datos.email();
@@ -41,32 +45,42 @@ public class GestorAcademico {
             System.out.println("ERROR: Correo electronico invalido");
             return null;
         }
-        if (!tipo.equals("EQUIVALENCIA") && !tipo.equals("PRORROGA") && !tipo.equals("MESA_ESPECIAL")) {
+        if (!"EQUIVALENCIA".equals(tipo)
+                && !"PRORROGA".equals(tipo)
+                && !"MESA_ESPECIAL".equals(tipo)) {
             System.out.println("ERROR: Tipo de tramite desconocido: " + tipo);
             return null;
         }
 
         Estudiante est = new Estudiante(legajo, nombre, email, carrera);
-        Solicitud sol = new Solicitud(contadorId++, tipo, descripcion, prioridad, "PENDIENTE", fecha, est);
 
-        // Lógica condicional compleja
-        if (tipo.equals("EQUIVALENCIA") || tipo.equals("MESA_ESPECIAL")) {
-            sol.responsable = listaResponsables.get(0); // Prof. Gomez
-            listaResponsables.get(0).casosAsignados++;
+        Solicitud sol = new Solicitud(
+                contadorId, tipo, descripcion, prioridad,
+                "PENDIENTE", fecha, est
+        );
+
+        if ("EQUIVALENCIA".equals(tipo) || "MESA_ESPECIAL".equals(tipo)) {
+            sol.responsable = listaResponsables.get(0);
         } else {
-            sol.responsable = listaResponsables.get(1); // Lic. Perez
-            listaResponsables.get(1).casosAsignados++;
+            sol.responsable = listaResponsables.get(1);
         }
-
-        listaSolicitudes.add(sol);
 
         try {
             persistencia.guardar(sol);
         } catch (IOException e) {
             System.out.println("Error de I/O al guardar: " + e.getMessage());
+            return null;
         }
 
-        System.out.println(">>> Solicitud registrada exitosamente con ID #" + sol.id + " asignada a " + sol.responsable.nombre);
+        listaSolicitudes.add(sol);
+        sol.responsable.casosAsignados++;
+        contadorId++;
+
+        System.out.println(
+                ">>> Solicitud registrada exitosamente con ID #" + sol.id +
+                        " asignada a " + sol.responsable.nombre
+        );
+
         return sol;
     }
 
@@ -91,8 +105,14 @@ public class GestorAcademico {
             return false;
         }
 
-        encontrada.responsable = resp;
-        resp.casosAsignados++;
+        if (encontrada.responsable != resp) {
+            if (encontrada.responsable != null) {
+                encontrada.responsable.casosAsignados--;
+            }
+
+            encontrada.responsable = resp;
+            resp.casosAsignados++;
+        }
         System.out.println("Solicitud #" + idSolicitud + " reasignada a " + resp.nombre);
         return true;
     }
@@ -104,7 +124,9 @@ public class GestorAcademico {
         if (encontrada == null) return false;
 
         // Validaciones primitivas
-        if (nuevoEstado.equals("APROBADA") || nuevoEstado.equals("RECHAZADA") || nuevoEstado.equals("EN_REVISION")) {
+        if ("APROBADA".equals(nuevoEstado)
+                || "RECHAZADA".equals(nuevoEstado)
+                || "EN_REVISION".equals(nuevoEstado)) {
             encontrada.estado = nuevoEstado;
             encontrada.dictamenResolucion = dictamen;
             System.out.println("Solicitud #" + idSolicitud + " paso al estado " + nuevoEstado);

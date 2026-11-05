@@ -163,4 +163,30 @@ class GestorAcademicoTest {
         assertSame(solicitud, guardadas.get(0));
         assertEquals("R02", guardadas.get(0).responsable.id);
     }
+
+    @Test
+    void debeActualizarContadoresAlReasignarResponsable() {
+        GestorAcademico gestor = new GestorAcademico(solicitud -> {});
+        Solicitud solicitud = registrarProrroga(gestor);
+        Responsable responsableAnterior = solicitud.responsable;
+
+        boolean resultado = gestor.asignarResponsable(solicitud.id, "R01");
+
+        assertTrue(resultado);
+        assertEquals("R01", solicitud.responsable.id);
+        assertEquals(0, responsableAnterior.casosAsignados);
+        assertEquals(1, solicitud.responsable.casosAsignados);
+    }
+
+    @Test
+    void debeMantenerContadorAlAsignarElMismoResponsable() {
+        GestorAcademico gestor = new GestorAcademico(solicitud -> {});
+        Solicitud solicitud = registrarProrroga(gestor);
+
+        boolean resultado = gestor.asignarResponsable(solicitud.id, "R02");
+
+        assertTrue(resultado);
+        assertEquals("R02", solicitud.responsable.id);
+        assertEquals(1, solicitud.responsable.casosAsignados);
+    }
 }

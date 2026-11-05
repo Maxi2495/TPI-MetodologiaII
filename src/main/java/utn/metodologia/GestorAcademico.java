@@ -91,8 +91,14 @@ public class GestorAcademico {
             return false;
         }
 
-        encontrada.responsable = resp;
-        resp.casosAsignados++;
+        if (encontrada.responsable != resp) {
+            if (encontrada.responsable != null) {
+                encontrada.responsable.casosAsignados--;
+            }
+
+            encontrada.responsable = resp;
+            resp.casosAsignados++;
+        }
         System.out.println("Solicitud #" + idSolicitud + " reasignada a " + resp.nombre);
         return true;
     }

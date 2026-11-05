@@ -119,6 +119,8 @@ nuevamente en 1.
 - [Verificación del sistema base](docs/verificacion-base.md)
 - [Refactorings aplicados](docs/refactorings.md)
 - [Code review y checklist](docs/code-review.md)
+- [Verificación final y comparación](docs/verificacion-final.md)
+- [Aplicación de SOLID y Clean Code](docs/solid-clean-code.md)
 
 ## Versiones e hitos
 
@@ -128,7 +130,7 @@ nuevamente en 1.
 - etapa-pruebas identifica la versión con las 18 pruebas aprobadas.
 - estadorefactorizado identifica la versión final del código revisado.
 
-El tag etapa-docs se incorporará al cerrar la documentación.
+- etapa-docs identifica el cierre de la documentación del repositorio.
 
 ## Limitaciones y mejoras pendientes
 

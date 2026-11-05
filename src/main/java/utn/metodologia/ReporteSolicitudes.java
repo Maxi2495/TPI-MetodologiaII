@@ -12,14 +12,17 @@ public class ReporteSolicitudes {
         int pendientes = 0;
         int aprobadas = 0;
         int rechazadas = 0;
+        int enRevision = 0;
 
         for (Solicitud solicitud : solicitudes) {
-            if (solicitud.estado.equals("PENDIENTE")) {
+            if ("PENDIENTE".equals(solicitud.estado)) {
                 pendientes++;
-            } else if (solicitud.estado.equals("APROBADA")) {
+            } else if ("APROBADA".equals(solicitud.estado)) {
                 aprobadas++;
-            } else if (solicitud.estado.equals("RECHAZADA")) {
+            } else if ("RECHAZADA".equals(solicitud.estado)) {
                 rechazadas++;
+            } else if ("EN_REVISION".equals(solicitud.estado)) {
+                enRevision++;
             }
 
             System.out.println(
@@ -36,7 +39,8 @@ public class ReporteSolicitudes {
         System.out.println(
                 "Pendientes: " + pendientes +
                         " | Aprobadas: " + aprobadas +
-                        " | Rechazadas: " + rechazadas
+                        " | Rechazadas: " + rechazadas +
+                        " | En revision: " + enRevision
         );
         System.out.println("=======================================================\n");
     }

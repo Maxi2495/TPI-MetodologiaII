@@ -57,3 +57,16 @@
 - Límite: una escritura interrumpida puede dejar una línea parcial.
   La escritura del archivo todavía no es atómica.
 - Clasificación: corrección del manejo de errores de persistencia.
+
+## Hallazgo CR-04 — Subtotal omitido en el reporte
+
+- Ubicación: ReporteSolicitudes.imprimir().
+- Prioridad: media.
+- Observación: las solicitudes EN_REVISION aparecían en el listado,
+  pero faltaban en los subtotales.
+- Corrección: agregar el contador y mostrar el subtotal En revision.
+- Criterio de aceptación: el ejemplo de Main muestra dos solicitudes,
+  una aprobada y una en revisión, con subtotales que suman dos.
+- Verificación manual: Main mostró Aprobadas: 1 y En revision: 1,
+  y terminó con código de salida 0.
+- Clasificación: corrección funcional del reporte.

@@ -53,26 +53,34 @@ public class GestorAcademico {
         }
 
         Estudiante est = new Estudiante(legajo, nombre, email, carrera);
-        Solicitud sol = new Solicitud(contadorId++, tipo, descripcion, prioridad, "PENDIENTE", fecha, est);
 
-        // Lógica condicional compleja
-        if (tipo.equals("EQUIVALENCIA") || tipo.equals("MESA_ESPECIAL")) {
-            sol.responsable = listaResponsables.get(0); // Prof. Gomez
-            listaResponsables.get(0).casosAsignados++;
+        Solicitud sol = new Solicitud(
+                contadorId, tipo, descripcion, prioridad,
+                "PENDIENTE", fecha, est
+        );
+
+        if ("EQUIVALENCIA".equals(tipo) || "MESA_ESPECIAL".equals(tipo)) {
+            sol.responsable = listaResponsables.get(0);
         } else {
-            sol.responsable = listaResponsables.get(1); // Lic. Perez
-            listaResponsables.get(1).casosAsignados++;
+            sol.responsable = listaResponsables.get(1);
         }
-
-        listaSolicitudes.add(sol);
 
         try {
             persistencia.guardar(sol);
         } catch (IOException e) {
             System.out.println("Error de I/O al guardar: " + e.getMessage());
+            return null;
         }
 
-        System.out.println(">>> Solicitud registrada exitosamente con ID #" + sol.id + " asignada a " + sol.responsable.nombre);
+        listaSolicitudes.add(sol);
+        sol.responsable.casosAsignados++;
+        contadorId++;
+
+        System.out.println(
+                ">>> Solicitud registrada exitosamente con ID #" + sol.id +
+                        " asignada a " + sol.responsable.nombre
+        );
+
         return sol;
     }
 

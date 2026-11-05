@@ -231,4 +231,44 @@ class GestorAcademicoTest {
         assertEquals("PENDIENTE", solicitud.estado);
         assertEquals("SIN_RESOLUCION", solicitud.dictamenResolucion);
     }
+    @Test
+    void debeRechazarRegistroSiFallaLaPersistencia() {
+        PersistenciaSolicitudes persistenciaConError = solicitud -> {
+            throw new java.io.IOException("Fallo de escritura simulado");
+        };
+
+        GestorAcademico gestor = new GestorAcademico(persistenciaConError);
+
+        Solicitud resultado = registrarProrroga(gestor);
+
+        assertNull(resultado);
+        assertTrue(gestor.listaSolicitudes.isEmpty());
+        assertEquals(0, gestor.listaResponsables.get(0).casosAsignados);
+        assertEquals(0, gestor.listaResponsables.get(1).casosAsignados);
+    }
+
+    @Test
+    void debeConservarIdDisponibleDespuesDeUnFalloDePersistencia() {
+        java.util.List<Solicitud> intentos = new java.util.ArrayList<>();
+
+        PersistenciaSolicitudes persistencia = solicitud -> {
+            intentos.add(solicitud);
+
+            if (intentos.size() == 1) {
+                throw new java.io.IOException("Primer intento fallido");
+            }
+        };
+
+        GestorAcademico gestor = new GestorAcademico(persistencia);
+
+        Solicitud primerIntento = registrarProrroga(gestor);
+        Solicitud segundoIntento = registrarProrroga(gestor);
+
+        assertNull(primerIntento);
+        assertNotNull(segundoIntento);
+        assertEquals(1, segundoIntento.id);
+        assertEquals(1, gestor.listaSolicitudes.size());
+        assertEquals(1, segundoIntento.responsable.casosAsignados);
+    }
+
 }

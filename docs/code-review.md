@@ -36,3 +36,24 @@
 - Evidencia previa: 13 pruebas aprobadas y 3 fallidas.
 - Evidencia posterior: las 16 pruebas pasaron.
 - Clasificación: corrección de validaciones detectada en code review.
+
+## Hallazgo CR-03 — Registro exitoso aunque fallaba el guardado
+
+- Ubicación: GestorAcademico.registrarSolicitud()
+  y PersistenciaSolicitudesArchivo.guardar().
+- Prioridad: alta.
+- Observación: el gestor actualizaba la memoria antes de guardar
+  y mostraba éxito incluso después de recibir una IOException.
+  PrintWriter también podía ocultar errores de escritura.
+- Corrección: guardar antes de actualizar la lista, los contadores
+  y el próximo ID. Ante IOException, devolver null.
+  Se reemplazó PrintWriter por BufferedWriter para propagar errores.
+- Criterios de aceptación:
+  - Un fallo de guardado devuelve null y conserva el estado en memoria.
+  - Un reintento exitoso utiliza el ID que seguía disponible.
+- Evidencia previa: 16 pruebas aprobadas y 2 fallidas.
+- Evidencia posterior: 18 pruebas aprobadas.
+  Main completó el flujo principal con código de salida 0.
+- Límite: una escritura interrumpida puede dejar una línea parcial.
+  La escritura del archivo todavía no es atómica.
+- Clasificación: corrección del manejo de errores de persistencia.

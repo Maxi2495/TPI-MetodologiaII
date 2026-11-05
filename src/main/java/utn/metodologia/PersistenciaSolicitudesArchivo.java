@@ -3,7 +3,6 @@ package utn.metodologia;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 public class PersistenciaSolicitudesArchivo implements PersistenciaSolicitudes {
 
@@ -15,17 +14,17 @@ public class PersistenciaSolicitudesArchivo implements PersistenciaSolicitudes {
 
     @Override
     public void guardar(Solicitud solicitud) throws IOException {
-        try (FileWriter fw = new FileWriter(rutaArchivo, true);
-             BufferedWriter bw = new BufferedWriter(fw);
-             PrintWriter out = new PrintWriter(bw)) {
+        try (BufferedWriter writer =
+                     new BufferedWriter(new FileWriter(rutaArchivo, true))) {
 
-            out.println(
+            writer.write(
                     solicitud.id + ";" +
                             solicitud.estudiante.legajo + ";" +
                             solicitud.tipo + ";" +
                             solicitud.estado + ";" +
                             solicitud.responsable.nombre
             );
+            writer.newLine();
         }
     }
 }

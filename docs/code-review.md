@@ -70,3 +70,40 @@
 - Verificación manual: Main mostró Aprobadas: 1 y En revision: 1,
   y terminó con código de salida 0.
 - Clasificación: corrección funcional del reporte.
+
+## Checklist de revisión técnica
+
+| Criterio | Resultado | Evidencia o pendiente |
+|---|---|---|
+| Búsquedas sin duplicación | Cumple | buscarSolicitudPorId centraliza la búsqueda. |
+| Parámetros de registro agrupados | Cumple | Se utiliza DatosSolicitud. |
+| Escritura separada del gestor | Cumple | PersistenciaSolicitudesArchivo implementa una interfaz específica. |
+| Presentación del reporte separada | Cumple | ReporteSolicitudes concentra el listado y los subtotales. |
+| Contadores correctos al reasignar | Cumple | Pruebas de cambio y repetición de responsable. |
+| Validación de datos, tipo y estado nulos | Cumple | Tres pruebas de rechazo controlado. |
+| Estado en memoria conservado ante IOException | Cumple | Pruebas de fallo de guardado y reintento. |
+| Subtotales para los cuatro estados | Cumple | Verificación manual mediante Main. |
+| Encapsulamiento de entidades y colecciones | Pendiente | Los atributos y listas continúan siendo públicos. |
+| Tipos específicos para estados, tipos y fechas | Pendiente | Continúan representados mediante String. |
+| Extensión de reglas de asignación | Pendiente | La asignación sigue utilizando condicionales y posiciones de lista. |
+| Recuperación y actualización de datos persistidos | Pendiente | El archivo registra altas y no se recupera al iniciar. |
+| Escritura atómica | Pendiente | Un fallo físico puede dejar una línea parcial. |
+| Pruebas aisladas del disco | Parcial | Las pruebas nuevas permiten sustituir la persistencia; las iniciales usan archivo. |
+| Manejo uniforme de errores | Parcial | Se conservan retornos null o false y mensajes por consola. |
+
+## Criterios de aceptación del alcance realizado
+
+- Los cuatro refactorings están documentados.
+- Las 18 pruebas deben aprobar antes de integrar la rama.
+- Main debe completar el flujo principal con código de salida 0.
+- El reporte debe incluir el subtotal EN_REVISION.
+- Los hallazgos CR-01 a CR-04 cuentan con correcciones y evidencias.
+- La deuda técnica restante queda identificada para futuras mejoras.
+
+## Mejoras pendientes
+
+Se propone abordar en futuras iteraciones el encapsulamiento,
+los tipos del dominio, la extensión de reglas de asignación,
+la recuperación de datos y la escritura atómica.
+
+La aceptación se limita a los cambios y casos verificados.

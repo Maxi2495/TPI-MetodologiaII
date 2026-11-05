@@ -23,6 +23,10 @@ public class GestorAcademico {
     }
 
     public Solicitud registrarSolicitud(DatosSolicitud datos) {
+        if (datos == null) {
+            System.out.println("ERROR: Datos de solicitud invalidos");
+            return null;
+        }
         String legajo = datos.legajo();
         String nombre = datos.nombre();
         String email = datos.email();
@@ -41,7 +45,9 @@ public class GestorAcademico {
             System.out.println("ERROR: Correo electronico invalido");
             return null;
         }
-        if (!tipo.equals("EQUIVALENCIA") && !tipo.equals("PRORROGA") && !tipo.equals("MESA_ESPECIAL")) {
+        if (!"EQUIVALENCIA".equals(tipo)
+                && !"PRORROGA".equals(tipo)
+                && !"MESA_ESPECIAL".equals(tipo)) {
             System.out.println("ERROR: Tipo de tramite desconocido: " + tipo);
             return null;
         }
@@ -110,7 +116,9 @@ public class GestorAcademico {
         if (encontrada == null) return false;
 
         // Validaciones primitivas
-        if (nuevoEstado.equals("APROBADA") || nuevoEstado.equals("RECHAZADA") || nuevoEstado.equals("EN_REVISION")) {
+        if ("APROBADA".equals(nuevoEstado)
+                || "RECHAZADA".equals(nuevoEstado)
+                || "EN_REVISION".equals(nuevoEstado)) {
             encontrada.estado = nuevoEstado;
             encontrada.dictamenResolucion = dictamen;
             System.out.println("Solicitud #" + idSolicitud + " paso al estado " + nuevoEstado);

@@ -189,4 +189,46 @@ class GestorAcademicoTest {
         assertEquals("R02", solicitud.responsable.id);
         assertEquals(1, solicitud.responsable.casosAsignados);
     }
+
+    @Test
+    void debeRechazarDatosNulosSinRegistrarSolicitud() {
+        GestorAcademico gestor = new GestorAcademico(solicitud -> {});
+
+        Solicitud resultado = gestor.registrarSolicitud(null);
+
+        assertNull(resultado);
+        assertTrue(gestor.listaSolicitudes.isEmpty());
+        assertEquals(0, gestor.listaResponsables.get(0).casosAsignados);
+        assertEquals(0, gestor.listaResponsables.get(1).casosAsignados);
+    }
+
+    @Test
+    void debeRechazarTipoNuloSinRegistrarSolicitud() {
+        GestorAcademico gestor = new GestorAcademico(solicitud -> {});
+
+        Solicitud resultado = gestor.registrarSolicitud(new DatosSolicitud(
+                "LEG-TEST-003", "Estudiante de prueba",
+                "estudiante@example.com", "TUP",
+                null, "Solicitud de prueba", "MEDIA", "02/11/2026"
+        ));
+
+        assertNull(resultado);
+        assertTrue(gestor.listaSolicitudes.isEmpty());
+        assertEquals(0, gestor.listaResponsables.get(0).casosAsignados);
+        assertEquals(0, gestor.listaResponsables.get(1).casosAsignados);
+    }
+
+    @Test
+    void debeRechazarEstadoNuloSinModificarSolicitud() {
+        GestorAcademico gestor = new GestorAcademico(solicitud -> {});
+        Solicitud solicitud = registrarProrroga(gestor);
+
+        boolean resultado = gestor.cambiarEstado(
+                solicitud.id, null, "Dictamen de prueba"
+        );
+
+        assertFalse(resultado);
+        assertEquals("PENDIENTE", solicitud.estado);
+        assertEquals("SIN_RESOLUCION", solicitud.dictamenResolucion);
+    }
 }

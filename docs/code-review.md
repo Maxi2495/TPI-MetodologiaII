@@ -19,3 +19,20 @@
 - Evidencia posterior: las 13 pruebas de GestorAcademicoTest pasaron.
 - Clasificación: corrección de un defecto funcional detectado
   durante la revisión técnica.
+
+## Hallazgo CR-02 — Valores null sin validación
+
+- Ubicación: GestorAcademico.registrarSolicitud() y cambiarEstado().
+- Prioridad: alta.
+- Observación: datos, tipo o nuevoEstado nulos provocaban
+  NullPointerException.
+- Corrección: validar datos antes de acceder a sus campos y comparar
+  tipos y estados mediante equals invocado sobre los literales.
+- Criterios de aceptación:
+    - Un registro con datos o tipo nulos devuelve null.
+    - El registro rechazado conserva las listas y los contadores.
+    - Un cambio con estado nulo devuelve false y conserva el estado
+      y el dictamen anteriores.
+- Evidencia previa: 13 pruebas aprobadas y 3 fallidas.
+- Evidencia posterior: las 16 pruebas pasaron.
+- Clasificación: corrección de validaciones detectada en code review.

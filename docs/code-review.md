@@ -74,22 +74,22 @@
 ## Checklist de revisión técnica
 
 | Criterio | Resultado | Evidencia o pendiente |
-|---|---|---|
-| Búsquedas sin duplicación | Cumple | buscarSolicitudPorId centraliza la búsqueda. |
-| Parámetros de registro agrupados | Cumple | Se utiliza DatosSolicitud. |
-| Escritura separada del gestor | Cumple | PersistenciaSolicitudesArchivo implementa una interfaz específica. |
-| Presentación del reporte separada | Cumple | ReporteSolicitudes concentra el listado y los subtotales. |
-| Contadores correctos al reasignar | Cumple | Pruebas de cambio y repetición de responsable. |
-| Validación de datos, tipo y estado nulos | Cumple | Tres pruebas de rechazo controlado. |
-| Estado en memoria conservado ante IOException | Cumple | Pruebas de fallo de guardado y reintento. |
-| Subtotales para los cuatro estados | Cumple | Verificación manual mediante Main. |
+|---|-----------|---|
+| Búsquedas sin duplicación | Cumple    | buscarSolicitudPorId centraliza la búsqueda. |
+| Parámetros de registro agrupados | Cumple    | Se utiliza DatosSolicitud. |
+| Escritura separada del gestor | Cumple    | PersistenciaSolicitudesArchivo implementa una interfaz específica. |
+| Presentación del reporte separada | Cumple    | ReporteSolicitudes concentra el listado y los subtotales. |
+| Contadores correctos al reasignar | Cumple    | Pruebas de cambio y repetición de responsable. |
+| Validación de datos, tipo y estado nulos | Cumple    | Tres pruebas de rechazo controlado. |
+| Estado en memoria conservado ante IOException | Cumple    | Pruebas de fallo de guardado y reintento. |
+| Subtotales para los cuatro estados | Cumple    | Verificación manual mediante Main. |
 | Encapsulamiento de entidades y colecciones | Pendiente | Los atributos y listas continúan siendo públicos. |
 | Tipos específicos para estados, tipos y fechas | Pendiente | Continúan representados mediante String. |
 | Extensión de reglas de asignación | Pendiente | La asignación sigue utilizando condicionales y posiciones de lista. |
 | Recuperación y actualización de datos persistidos | Pendiente | El archivo registra altas y no se recupera al iniciar. |
 | Escritura atómica | Pendiente | Un fallo físico puede dejar una línea parcial. |
-| Pruebas aisladas del disco | Parcial | Las pruebas nuevas permiten sustituir la persistencia; las iniciales usan archivo. |
-| Manejo uniforme de errores | Parcial | Se conservan retornos null o false y mensajes por consola. |
+| Pruebas aisladas del disco | Cumple    | Las pruebas nuevas permiten sustituir la persistencia; las iniciales usan archivo. |
+| Manejo uniforme de errores | Parcial   | Se conservan retornos null o false y mensajes por consola. |
 
 ## Criterios de aceptación del alcance realizado
 

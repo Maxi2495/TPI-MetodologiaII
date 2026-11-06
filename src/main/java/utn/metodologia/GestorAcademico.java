@@ -149,4 +149,17 @@ public class GestorAcademico {
         }
         return null;
     }
+    // Operacion 5: buscar por estado
+    public List<Solicitud> buscarPorEstado(String estado) {
+        List<Solicitud> resultado = new ArrayList<>();
+        if (estado == null) {
+            return resultado;
+        }
+        for (Solicitud solicitud : listaSolicitudes) {
+            if (estado.equals(solicitud.estado)) {
+                resultado.add(solicitud);
+            }
+        }
+        return resultado;
+    }
 }

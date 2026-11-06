@@ -8,7 +8,7 @@ class GestorAcademicoTest {
 
     @Test
     void debeRegistrarEquivalenciaYAsignarResponsable() {
-        GestorAcademico gestor = new GestorAcademico();
+        GestorAcademico gestor = new GestorAcademico(solicitud -> {});
 
         Solicitud solicitud = gestor.registrarSolicitud(new DatosSolicitud(
                 "LEG-TEST-001",
@@ -32,7 +32,7 @@ class GestorAcademicoTest {
 
     @Test
     void debeRechazarLegajoVacio() {
-        GestorAcademico gestor = new GestorAcademico();
+        GestorAcademico gestor = new GestorAcademico(solicitud -> {});
 
         Solicitud solicitud = gestor.registrarSolicitud(new DatosSolicitud(
                 "", "Estudiante", "estudiante@example.com", "TUP",
@@ -46,7 +46,7 @@ class GestorAcademicoTest {
 
     @Test
     void debeRechazarCorreoInvalido() {
-        GestorAcademico gestor = new GestorAcademico();
+        GestorAcademico gestor = new GestorAcademico(solicitud -> {});
 
         Solicitud solicitud = gestor.registrarSolicitud(new DatosSolicitud(
                 "LEG-001", "Estudiante", "correo-invalido", "TUP",
@@ -59,7 +59,7 @@ class GestorAcademicoTest {
 
     @Test
     void debeRechazarTipoDesconocido() {
-        GestorAcademico gestor = new GestorAcademico();
+        GestorAcademico gestor = new GestorAcademico(solicitud -> {});
 
         Solicitud solicitud = gestor.registrarSolicitud(new DatosSolicitud(
                 "LEG-001", "Estudiante", "estudiante@example.com", "TUP",
@@ -72,7 +72,7 @@ class GestorAcademicoTest {
 
     @Test
     void debeAsignarProrrogaAlAreaDeAlumnos() {
-        GestorAcademico gestor = new GestorAcademico();
+        GestorAcademico gestor = new GestorAcademico(solicitud -> {});
 
         Solicitud solicitud = registrarProrroga(gestor);
 
@@ -83,7 +83,7 @@ class GestorAcademicoTest {
 
     @Test
     void debeReasignarResponsable() {
-        GestorAcademico gestor = new GestorAcademico();
+        GestorAcademico gestor = new GestorAcademico(solicitud -> {});
         Solicitud solicitud = registrarProrroga(gestor);
 
         boolean resultado = gestor.asignarResponsable(solicitud.id, "R01");
@@ -94,7 +94,7 @@ class GestorAcademicoTest {
 
     @Test
     void debeRechazarResponsableInexistenteSinCambiarAsignacion() {
-        GestorAcademico gestor = new GestorAcademico();
+        GestorAcademico gestor = new GestorAcademico(solicitud -> {});
         Solicitud solicitud = registrarProrroga(gestor);
 
         boolean resultado = gestor.asignarResponsable(solicitud.id, "R99");
@@ -105,7 +105,7 @@ class GestorAcademicoTest {
 
     @Test
     void debeCambiarEstadoYGuardarDictamen() {
-        GestorAcademico gestor = new GestorAcademico();
+        GestorAcademico gestor = new GestorAcademico(solicitud -> {});
         Solicitud solicitud = registrarProrroga(gestor);
 
         boolean resultado = gestor.cambiarEstado(
@@ -119,7 +119,7 @@ class GestorAcademicoTest {
 
     @Test
     void debeRechazarEstadoInvalidoSinModificarSolicitud() {
-        GestorAcademico gestor = new GestorAcademico();
+        GestorAcademico gestor = new GestorAcademico(solicitud -> {});
         Solicitud solicitud = registrarProrroga(gestor);
 
         boolean resultado = gestor.cambiarEstado(
@@ -133,7 +133,7 @@ class GestorAcademicoTest {
 
     @Test
     void debeDevolverFalseCuandoLaSolicitudNoExiste() {
-        GestorAcademico gestor = new GestorAcademico();
+        GestorAcademico gestor = new GestorAcademico(solicitud -> {});
 
         assertFalse(gestor.asignarResponsable(999, "R01"));
         assertFalse(gestor.cambiarEstado(999, "APROBADA", "Prueba"));
@@ -269,6 +269,23 @@ class GestorAcademicoTest {
         assertEquals(1, segundoIntento.id);
         assertEquals(1, gestor.listaSolicitudes.size());
         assertEquals(1, segundoIntento.responsable.casosAsignados);
+    }
+
+    @Test
+    void debeFiltrarSolicitudesPorEstado() {
+        GestorAcademico gestor = new GestorAcademico(solicitud -> {});
+        Solicitud s1 = registrarProrroga(gestor);
+        Solicitud s2 = registrarProrroga(gestor);
+        gestor.cambiarEstado(s1.id, "APROBADA", "Documentacion completa");
+
+        java.util.List<Solicitud> aprobadas = gestor.buscarPorEstado("APROBADA");
+        java.util.List<Solicitud> pendientes = gestor.buscarPorEstado("PENDIENTE");
+
+        assertEquals(1, aprobadas.size());
+        assertSame(s1, aprobadas.get(0));
+        assertEquals(1, pendientes.size());
+        assertSame(s2, pendientes.get(0));
+        assertTrue(gestor.buscarPorEstado(null).isEmpty());
     }
 
 }

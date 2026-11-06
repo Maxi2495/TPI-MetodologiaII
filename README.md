@@ -37,6 +37,7 @@ Las ejecuciones documentadas se realizaron con JDK 25 desde IntelliJ.
 3. Reasignar una solicitud y actualizar los contadores de responsables.
 4. Cambiar el estado y registrar un dictamen.
 5. Listar solicitudes y mostrar subtotales por estado.
+6. Buscar solicitudes por estado.
 
 Los tipos admitidos son EQUIVALENCIA, PRORROGA y MESA_ESPECIAL.
 
@@ -66,7 +67,7 @@ Las pruebas se encuentran en:
 Para ejecutarlas desde IntelliJ, abrir GestorAcademicoTest y seleccionar
 Run sobre la clase completa.
 
-La versión revisada cuenta con 18 pruebas aprobadas que cubren:
+La versión revisada cuenta con 19 pruebas aprobadas que cubren:
 
 - Registro y asignación inicial.
 - Rechazo de legajo, correo y tipo inválidos.
@@ -77,6 +78,7 @@ La versión revisada cuenta con 18 pruebas aprobadas que cubren:
 - Datos, tipos y estados nulos.
 - Delegación del guardado.
 - Fallos de persistencia y reintento.
+- Búsqueda de solicitudes por estado.
 
 El reporte también se verificó manualmente mediante Main.
 

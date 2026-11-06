@@ -64,3 +64,11 @@ el archivo real y otras sustituyen la persistencia.
 Continúan pendientes la recuperación de datos al iniciar,
 la persistencia de cambios posteriores al alta y la escritura atómica.
 Una interrupción física puede dejar una línea parcial en el archivo.
+
+## Complemento posterior a las 18 pruebas
+
+Se agregó buscarPorEstado (complemento funcional, no es refactoring) y una
+prueba que lo verifica, por lo que la suite final tiene 19 pruebas
+aprobadas. Además, las pruebas iniciales dejaron de escribir en
+solicitudes_db.txt al usar una persistencia sustituta.
+Las evidencias anteriores (18 pruebas) se conservan como registro histórico.
